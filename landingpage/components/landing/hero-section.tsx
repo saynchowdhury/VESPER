@@ -109,9 +109,14 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
+  const [os, setOs] = useState<"mac" | "windows" | "linux" | "unknown">("unknown");
 
   useEffect(() => {
     setIsVisible(true);
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (userAgent.indexOf("win") > -1) setOs("windows");
+    else if (userAgent.indexOf("mac") > -1) setOs("mac");
+    else if (userAgent.indexOf("linux") > -1) setOs("linux");
   }, []);
 
   useEffect(() => {
@@ -120,6 +125,17 @@ export function HeroSection() {
     }, 2500);
     return () => clearInterval(interval);
   }, []);
+
+  const getDownloadInfo = () => {
+    switch (os) {
+      case "mac": return { text: "Download for macOS", size: "85 MB", ext: ".dmg", link: "https://github.com/saynchowdhury/VESPER/releases/latest/download/Vesper.dmg" };
+      case "windows": return { text: "Download for Windows", size: "75 MB", ext: ".exe", link: "https://github.com/saynchowdhury/VESPER/releases/latest/download/Vesper.exe" };
+      case "linux": return { text: "Download for Linux", size: "90 MB", ext: ".AppImage", link: "https://github.com/saynchowdhury/VESPER/releases/latest/download/Vesper.AppImage" };
+      default: return { text: "Download Vesper", size: "All platforms", ext: "", link: "https://github.com/saynchowdhury/VESPER/releases/latest" };
+    }
+  };
+  
+  const dlInfo = getDownloadInfo();
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-start overflow-hidden bg-black">
@@ -202,14 +218,19 @@ export function HeroSection() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <Button 
-            size="lg" 
-            className="rounded-full bg-white hover:bg-white/90 text-black px-10 h-16 text-lg group"
-          >
-            Download Vesper
-            <Download className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-          </Button>
-          <span className="text-sm font-mono text-white/40">v0.1.0 — Mac, Windows, Linux</span>
+          <a href={dlInfo.link} target="_blank" rel="noopener noreferrer">
+            <Button 
+              size="lg" 
+              className="rounded-full bg-white hover:bg-white/90 text-black px-10 h-16 text-lg group"
+            >
+              {dlInfo.text}
+              <Download className="ml-2 w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+            </Button>
+          </a>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-mono text-white/40">v0.1.0 — {dlInfo.ext ? `${dlInfo.ext} file` : "Mac, Windows, Linux"}</span>
+            <span className="text-xs font-mono text-white/30 text-center sm:text-left">Size: {dlInfo.size}</span>
+          </div>
         </div>
         </div>
       </div>
