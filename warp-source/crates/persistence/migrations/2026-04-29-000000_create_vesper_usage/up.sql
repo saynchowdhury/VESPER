@@ -1,0 +1,5 @@
+CREATE TABLE vesper_usage (
+  provider TEXT PRIMARY KEY NOT NULL,
+  daily_tokens_used BIGINT NOT NULL DEFAULT 0,
+  last_reset_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
