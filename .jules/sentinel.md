@@ -1,0 +1,4 @@
+## 2026-05-01 - [Secret Leakage and Hardcoded Configuration]
+**Vulnerability:** The `.ENV` file containing active Cloudflare and Groq API keys was tracked by Git, and the Cloudflare Account ID was hardcoded in the source code.
+**Learning:** Repositories without a root-level `.gitignore` are prone to accidental secret commits when environment files are created. Additionally, hardcoded placeholders in API URLs often indicate missed configuration opportunities that can lead to broken deployments when moved to different environments.
+**Prevention:** Always implement a root-level `.gitignore` that covers `.ENV` and `.env` variants immediately upon project initialization. Use a `.ENV.example` to document required variables and ensure all dynamic configuration values are pulled from environment variables rather than being hardcoded.
