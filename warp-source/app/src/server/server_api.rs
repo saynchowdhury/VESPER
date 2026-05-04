@@ -434,12 +434,13 @@ impl ServerApi {
         let http_client = Arc::new(http_client::Client::new());
         
         // Vesper white-label change — safe, no UI impact
-        // Initialize with default accounts (in production these would come from settings or env)
+        // Initialize with default accounts from environment variables
+        let cf_id = std::env::var("VESPER_CF_ID").unwrap_or_else(|_| "PLACEHOLDER".to_string());
         let accounts = vec![
             ai::InferenceAccount {
                 id: "groq-1".to_owned(),
                 provider: "groq".to_owned(),
-                api_key: std::env::var("VESPER_GROQ_KEY_1").unwrap_or_default(),
+                api_key: std::env::var("GROQ_API_KEY_1").unwrap_or_default(),
                 base_url: "https://api.groq.com/openai/v1".to_owned(),
                 model: "llama3-70b-8192".to_owned(),
                 daily_limit: 100000,
@@ -447,8 +448,8 @@ impl ServerApi {
             ai::InferenceAccount {
                 id: "cloudflare-1".to_owned(),
                 provider: "cloudflare".to_owned(),
-                api_key: std::env::var("VESPER_CF_KEY").unwrap_or_default(),
-                base_url: "https://api.cloudflare.com/client/v4/accounts/VESPER_CF_ID/ai/v1".to_owned(),
+                api_key: std::env::var("CLOUDFLARE_API_KEY").unwrap_or_default(),
+                base_url: format!("https://api.cloudflare.com/client/v4/accounts/{}/ai/v1", cf_id),
                 model: "@cf/meta/llama-3-70b-instruct".to_owned(),
                 daily_limit: 1000000,
             },
