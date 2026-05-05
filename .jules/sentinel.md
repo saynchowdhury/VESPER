@@ -1,0 +1,4 @@
+## 2024-05-22 - Untracked Secrets and Hardcoded Identifiers
+**Vulnerability:** The root-level `.ENV` file, containing production Cloudflare and Groq API keys, was being tracked by Git. Additionally, the Cloudflare Account ID (`VESPER_CF_ID`) was hardcoded into the API request URL in `warp-source/app/src/server/server_api.rs`.
+**Learning:** Forgetting to add `.ENV` to `.gitignore` at the start of a project or during a fork can lead to severe credential leaks. Hardcoding identifiers in URLs also makes rotation and multi-environment setup difficult and leaks account-level metadata.
+**Prevention:** Always initialize a root-level `.gitignore` that includes `.ENV` and other sensitive patterns. Use environment variables for all secrets AND account-specific identifiers. Provide a `.ENV.example` template to guide developers without exposing real credentials.
