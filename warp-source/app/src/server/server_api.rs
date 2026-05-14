@@ -448,7 +448,10 @@ impl ServerApi {
                 id: "cloudflare-1".to_owned(),
                 provider: "cloudflare".to_owned(),
                 api_key: std::env::var("VESPER_CF_KEY").unwrap_or_default(),
-                base_url: "https://api.cloudflare.com/client/v4/accounts/VESPER_CF_ID/ai/v1".to_owned(),
+                base_url: format!(
+                    "https://api.cloudflare.com/client/v4/accounts/{}/ai/v1",
+                    std::env::var("VESPER_CF_ID").unwrap_or_else(|_| "VESPER_CF_ID".to_string())
+                ),
                 model: "@cf/meta/llama-3-70b-instruct".to_owned(),
                 daily_limit: 1000000,
             },
