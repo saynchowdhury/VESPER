@@ -78,24 +78,42 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Vesper white-label change — safe, no UI impact
+  // Sanitize ID and keys to prevent CSS injection
+  const safeId = id.replace(/[^a-zA-Z0-9-_]/g, '')
+
   return (
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+          .map(([theme, prefix]) => {
+            const cssPrefix = prefix ? `${prefix} ` : ''
+            return `
+${cssPrefix}[data-chart=${safeId}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+
+    // Sanitize key and validate color to prevent CSS injection
+    const safeKey = key.replace(/[^a-zA-Z0-9-_]/g, '')
+
+    // Strict validation for colors: allow hex, rgb, hsl, and named colors.
+    // Forbid characters that could be used for CSS injection (;, {, }, \, <, >).
+    const isSafeColor =
+      color &&
+      /^(#(?:[0-9a-fA-F]{3,4}){1,2}|(rgb|hsl)a?\([0-9%,. ]+\)|[a-z]+)$/.test(
+        color,
+      )
+
+    return isSafeColor ? `  --color-${safeKey}: ${color};` : null
   })
+  .filter(Boolean)
   .join('\n')}
 }
-`,
-          )
+`
+          })
           .join('\n'),
       }}
     />
