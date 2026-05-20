@@ -5,6 +5,14 @@ import * as RechartsPrimitive from 'recharts'
 
 import { cn } from '@/lib/utils'
 
+function sanitizeId(id: string) {
+  return id.replace(/[^a-zA-Z0-9-_]/g, '')
+}
+
+function sanitizeColor(color: string) {
+  return color.replace(/[;{}\[\]\\<>]/g, '')
+}
+
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
 
@@ -47,7 +55,7 @@ function ChartContainer({
   >['children']
 }) {
   const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, '')}`
+  const chartId = `chart-${sanitizeId(id || uniqueId.replace(/:/g, ''))}`
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -90,7 +98,9 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+    return color
+      ? `  --color-${sanitizeId(key)}: ${sanitizeColor(color)};`
+      : null
   })
   .join('\n')}
 }
