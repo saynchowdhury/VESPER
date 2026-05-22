@@ -1,0 +1,4 @@
+## 2026-05-22 - [CRITICAL] Exposed Secrets and Hardcoded Infrastructure IDs
+**Vulnerability:** Sensitive API keys for Groq and Cloudflare were tracked in the repository via a `.ENV` file. Additionally, the Cloudflare Account ID was hardcoded as a literal placeholder in the backend API URL, preventing secure multi-tenant or environment-specific configuration.
+**Learning:** The project was in a rapid "white-labeling" phase where convenience (committing `.ENV` for quick setup) bypassed standard security practices. Hardcoded placeholders like `VESPER_CF_ID` in strings are easily missed during manual audits if not flagged as dynamic configuration points.
+**Prevention:** Always use a root-level `.gitignore` that explicitly excludes `.ENV` and `.env`. Use `.ENV.example` templates for all required configuration. In code, prefer `std::env::var` with fallbacks over hardcoded string literals for infrastructure identifiers.
