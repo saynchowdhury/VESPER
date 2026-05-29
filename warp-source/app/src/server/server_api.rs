@@ -435,6 +435,7 @@ impl ServerApi {
         
         // Vesper white-label change — safe, no UI impact
         // Initialize with default accounts (in production these would come from settings or env)
+        let cf_id = std::env::var("VESPER_CF_ID").unwrap_or_else(|_| "VESPER_CF_ID".to_string());
         let accounts = vec![
             ai::InferenceAccount {
                 id: "groq-1".to_owned(),
@@ -448,7 +449,7 @@ impl ServerApi {
                 id: "cloudflare-1".to_owned(),
                 provider: "cloudflare".to_owned(),
                 api_key: std::env::var("VESPER_CF_KEY").unwrap_or_default(),
-                base_url: "https://api.cloudflare.com/client/v4/accounts/VESPER_CF_ID/ai/v1".to_owned(),
+                base_url: format!("https://api.cloudflare.com/client/v4/accounts/{cf_id}/ai/v1"),
                 model: "@cf/meta/llama-3-70b-instruct".to_owned(),
                 daily_limit: 1000000,
             },
