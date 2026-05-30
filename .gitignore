@@ -1,0 +1,12 @@
+.ENV
+.env
+target/
+node_modules/
+.DS_Store
+*.log
+dist/
+build/
+.next/
+
+# Do NOT ignore .jules/ directory as it contains the security journal
+!.jules/
