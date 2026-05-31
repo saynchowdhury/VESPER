@@ -1,0 +1,4 @@
+## 2025-05-31 - Exposed secrets in Git and hardcoded environment placeholders
+**Vulnerability:** The `.ENV` file containing sensitive API keys (Cloudflare, Groq) was tracked by Git. Additionally, `warp-source/app/src/server/server_api.rs` contained a hardcoded placeholder `VESPER_CF_ID` in a URL string instead of using an environment variable.
+**Learning:** Initial project setup or white-labeling forks can easily leak template secrets if `.gitignore` is not properly configured at the root. Hardcoded placeholders in strings are easy to miss during refactoring.
+**Prevention:** Always initialize a root-level `.gitignore` that explicitly excludes `.ENV` and `.env`. Use a `.ENV.example` template for onboarding. Audit codebase for hardcoded placeholders like `REDACTED` or `PLACEHOLDER` or specific service IDs.
